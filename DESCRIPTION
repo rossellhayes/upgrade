@@ -1,0 +1,19 @@
+Package: upgrade
+Title: Upgrade Installed Packages
+Version: 0.0.0.9000
+Authors@R: 
+    person("Alex", "Rossell Hayes", , "alexander@rossellhayes.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9412-0457"))
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Imports: 
+    cli,
+    fs,
+    pak,
+    pingr,
+    pkgdepends,
+    rappdirs,
+    rlang
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
