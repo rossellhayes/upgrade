@@ -6,36 +6,32 @@
 #' @export
 
 upgrade <- function(daily = FALSE) {
-  cache <- NULL
+  cache <- fs::path(rappdirs::user_cache_dir("uptodate"), "last_update.txt")
+  date <- as.character(Sys.Date())
 
-  if (daily) {
-    date <- as.character(Sys.Date())
-    cache <- fs::path(rappdirs::user_cache_dir("uptodate"), "last_update.txt")
+  if (fs::file_exists(cache)) {
+    if (daily) {
+      cache_date <- readLines(cache)
 
-    if (fs::file_exists(cache)) {
-      if (daily) {
-        cache_date <- readLines(cache)
-
-        if (identical(date, cache_date)) {
-          force_upgrade_call <- format(
-            rlang::call_modify(
-              rlang::call_match(rlang::current_call(), upgrade),
-              daily = FALSE
-            )
+      if (identical(date, cache_date)) {
+        force_upgrade_call <- format(
+          rlang::call_modify(
+            rlang::call_match(rlang::current_call(), upgrade),
+            daily = FALSE
           )
+        )
 
-          cli::cli_inform(c(
-            "v" = "Packages have already been upgraded today.",
-            "*" = "Use {.code {force_upgrade_call}} to upgrade again today."
-          ))
+        cli::cli_inform(c(
+          "v" = "Packages have already been upgraded today.",
+          "*" = "Use {.code {force_upgrade_call}} to upgrade again today."
+        ))
 
-          return(invisible(NULL))
-        }
+        return(invisible(NULL))
       }
-    } else {
-      fs::dir_create(fs::path_dir(cache))
-      fs::file_create(cache)
     }
+  } else {
+    fs::dir_create(fs::path_dir(cache))
+    fs::file_create(cache)
   }
 
   result <- pkg_upgrade()
