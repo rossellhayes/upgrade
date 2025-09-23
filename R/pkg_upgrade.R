@@ -8,10 +8,10 @@ pkg_upgrade <- function() {
     cli::cli_abort("Internet connection is unavailable.")
   }
 
-  package_list <- pkgdepends::lib_status()
+  package_list <- bind_rows(lapply(.libPaths(), pkgdepends::lib_status))
   package_list <- package_list[!package_list$remotetype %in% c(NA, "local"), ]
 
-  packages <- package_list$remotepkgref
+  packages <- unique(package_list$remotepkgref)
   packages <- packages[!is.na(packages)]
 
   package_proposal <- pkgdepends::new_pkg_installation_proposal(packages)
